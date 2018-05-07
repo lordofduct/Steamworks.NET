@@ -13,23 +13,25 @@ using System.IO;
 [InitializeOnLoad]
 public class RedistInstall {
 	static RedistInstall() {
-		CopyFile("Assets/Plugins/Steamworks.NET/redist", "steam_appid.txt", false);
+		CopyFile(SteamworksLocationHelper.RedistPath, "steam_appid.txt", false);
 
-		// We only need to copy the dll into the project root on <= Unity 5.0
+
+        // We only need to copy the dll into the project root on <= Unity 5.0
 #if UNITY_EDITOR_WIN && (UNITY_4_7 || UNITY_5_0)
-	#if UNITY_EDITOR_64
-		CopyFile("Assets/Plugins/x86_64", "steam_api64.dll", true);
-	#else
-		CopyFile("Assets/Plugins/x86", "steam_api.dll", true);
-	#endif
+#if UNITY_EDITOR_64
+		CopyFile(SteamworksLocationHelper.PluginX86_64Directory, "steam_api64.dll", true);
+#else
+		CopyFile(SteamworksLocationHelper.PluginX86Directory, "steam_api.dll", true);
+#endif
 #endif
 
 #if UNITY_5 || UNITY_2017
-	#if !DISABLEPLATFORMSETTINGS
-		SetPlatformSettings();
-	#endif
+#if !DISABLEPLATFORMSETTINGS
+        SetPlatformSettings();
+        SetScriptingDefineSymbols();
+    #endif
 #endif
-	}
+    }
 
 	static void CopyFile(string path, string filename, bool bCheckDifference) {
 		string strCWD = Directory.GetCurrentDirectory();
@@ -258,5 +260,26 @@ public class RedistInstall {
 		plugin.SetCompatibleWithPlatform(platform, enable);
 		return true;
 	}
+
+    static void SetScriptingDefineSymbols()
+    {
+        var symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        if(symbols != null && symbols.Length > 0)
+        {
+            var arr = symbols.Split(';');
+            if(System.Array.IndexOf(arr, "STEAMWORKS") < 0)
+            {
+                System.Array.Resize(ref arr, arr.Length + 1);
+                arr[arr.Length - 1] = "STEAMWORKS";
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, string.Join(";", arr));
+            }
+        }
+        else
+        {
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "STEAMWORKS");
+        }
+    }
+
 #endif // UNITY_5 || UNITY_2017 || UNITY_2017_1_OR_NEWER
+
 }

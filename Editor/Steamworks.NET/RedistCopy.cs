@@ -70,10 +70,10 @@ public class RedistCopy {
 
 #if !DISABLEREDISTCOPY
 		if (target == BuildTarget.StandaloneWindows64) {
-			CopyFile("steam_api64.dll", "steam_api64.dll", "Assets/Plugins/x86_64", pathToBuiltProject);
+			CopyFile("steam_api64.dll", "steam_api64.dll", SteamworksLocationHelper.PluginX86_64Directory, pathToBuiltProject);
 		}
 		else if (target == BuildTarget.StandaloneWindows) {
-			CopyFile("steam_api.dll", "steam_api.dll", "Assets/Plugins/x86", pathToBuiltProject);
+			CopyFile("steam_api.dll", "steam_api.dll", SteamworksLocationHelper.PluginX86Directory, pathToBuiltProject);
 		}
 
 		string controllerCfg = Path.Combine(Application.dataPath, "controller.vdf");
@@ -88,9 +88,9 @@ public class RedistCopy {
 			}
 		}
 #endif
-	}
+    }
 
-	static void CopyFile(string filename, string outputfilename, string pathToFile, string pathToBuiltProject) {
+    static void CopyFile(string filename, string outputfilename, string pathToFile, string pathToBuiltProject) {
 		string strCWD = Directory.GetCurrentDirectory();
 		string strSource = Path.Combine(Path.Combine(strCWD, pathToFile), filename);
 		string strFileDest = Path.Combine(Path.GetDirectoryName(pathToBuiltProject), outputfilename);
