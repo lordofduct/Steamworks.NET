@@ -1,3 +1,14 @@
+LoD Fork
+=======
+This is a fork of the original Steamworks.NET from Riley Labrecque.
+
+Includes my own changes to integrate with my usual unity projects and spacepuppy framework.
+
+You should probably see the original authors page for the main release.
+
+See below for information from that project:
+
+
 Steamworks.NET
 =======
 
