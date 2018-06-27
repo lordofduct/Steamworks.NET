@@ -6,7 +6,7 @@
 #define DISABLESTEAMWORKS
 #endif
 
-#if !DISABLESTEAMWORKS
+#if STEAMWORKS && !DISABLESTEAMWORKS
 
 // Add 'DISABLEREDISTCOPY' to your custom platform defines to disable automatic copying!
 #if UNITY_5_3_OR_NEWER
