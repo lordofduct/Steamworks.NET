@@ -3,7 +3,7 @@
 // Please see the included LICENSE.txt for additional information.
 
 // Uncomment this out or add it to your custom platform defines to disable checking the plugin platform settings.
-//#define DISABLEPLATFORMSETTINGS
+#define DISABLEPLATFORMSETTINGS
 
 using UnityEngine;
 using UnityEditor;
@@ -73,7 +73,7 @@ public class RedistInstall {
 	}
 
 #if UNITY_5 || UNITY_2017 || UNITY_2017_1_OR_NEWER
-	static void SetPlatformSettings() {
+	public static void SetPlatformSettings() {
 		foreach(var plugin in PluginImporter.GetAllImporters()) {
 			// Skip any null plugins, why is this a thing?!
 			if(plugin == null) {
@@ -261,7 +261,7 @@ public class RedistInstall {
 		return true;
 	}
 
-    static void SetScriptingDefineSymbols()
+    public static void SetScriptingDefineSymbols()
     {
         var symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
         if(symbols != null && symbols.Length > 0)
