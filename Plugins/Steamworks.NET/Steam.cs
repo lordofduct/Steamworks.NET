@@ -9,7 +9,7 @@
 #define DISABLESTEAMWORKS
 #endif
 
-#if !DISABLESTEAMWORKS
+#if STEAMWORKS && !DISABLESTEAMWORKS
 
 using System.Runtime.InteropServices;
 using IntPtr = System.IntPtr;

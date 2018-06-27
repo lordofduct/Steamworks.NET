@@ -9,7 +9,7 @@
 #define DISABLESTEAMWORKS
 #endif
 
-#if !DISABLESTEAMWORKS
+#if STEAMWORKS && !DISABLESTEAMWORKS
 
 // If we're running in the Unity Editor we need the editors platform.
 #if UNITY_EDITOR_WIN
