@@ -1,0 +1,25 @@
+{
+    "name": "com.spacepuppy.steamworks.net",
+    "rootNamespace": "",
+    "references": [
+        "GUID:68bd7fdb68ef2684e982e8a9825b18a5",
+        "GUID:63a2a53522a96694b9529c5ae369fdfe"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "LinuxStandalone64",
+        "macOSStandalone",
+        "WindowsStandalone32",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "STEAMWORKS_NET"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

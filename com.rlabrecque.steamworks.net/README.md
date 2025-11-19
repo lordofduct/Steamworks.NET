@@ -1,11 +1,21 @@
+LoD Fork
+=======
+This is a fork of the original Steamworks.NET from Riley Labrecque.
+
+Includes my own changes to integrate with my usual unity projects and spacepuppy framework.
+
+You should probably see the original authors page for the main release.
+
+See below for information from that project:
+
 # Steamworks.NET
 
-_Steamworks.NET_ is a C# Wrapper for Valve's Steamworks API, it can be used either with Unity or your C# based Application.
+*Steamworks.NET* is a C# Wrapper for Valve's Steamworks API, it can be used either with Unity or your C# based Application.
 
-_Steamworks.NET_ was designed to be as close as possible to the original C++ API, as such the documentation provided from Valve largely covers usage of _Steamworks.NET_.
-Niceties and C# Idioms can be easily implemented on top of _Steamworks.NET_.
+*Steamworks.NET* was designed to be as close as possible to the original C++ API, as such the documentation provided from Valve largely covers usage of *Steamworks.NET*.
+Niceties and C# Idioms can be easily implemented on top of *Steamworks.NET*.
 
-_Steamworks.NET_ fully supports Windows (32 and 64 bit), OSX, and Linux. Currently building against Steamworks SDK 1.55.
+*Steamworks.NET* fully supports Windows (32 and 64 bit), OSX, and Linux. Currently building against Steamworks SDK 1.55.
 
 * Author: [Riley Labrecque](https://github.com/rlabrecque)
 * License: [MIT](http://www.opensource.org/licenses/mit-license.php)
