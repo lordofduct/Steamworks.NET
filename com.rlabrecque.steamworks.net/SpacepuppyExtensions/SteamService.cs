@@ -2,28 +2,39 @@
 #define DISABLESTEAMWORKS
 #endif
 
-#if STEAMWORKS_NET && !DISABLESTEAMWORKS
-
 using UnityEngine;
 using System.Collections.Generic;
 
+#if STEAMWORKS_NET && !DISABLESTEAMWORKS
 using Steamworks;
+#endif
 
 namespace com.spacepuppy
 {
 
-    public class SteamService : ServiceComponent<SteamService>
+    public sealed class SteamService : ServiceComponent<SteamService>
     {
 
-        // Once you get a Steam AppID assigned by Valve, you need to replace AppId_t.Invalid with it and
-        // remove steam_appid.txt from the game depot. eg: "(AppId_t)480" or "new AppId_t(480)".
-        // See the Valve documentation for more information: https://partner.steamgames.com/doc/sdk/api#initialization_and_shutdown
-        public static AppId_t APP_ID = AppId_t.Invalid;
+#if STEAMWORKS_NET && !DISABLESTEAMWORKS
+
+        public enum AutoInitializeTiming
+        {
+            Manual = 0,
+            OnAwake = 1,
+            OnStart = 2,
+        }
 
         #region Fields
 
+        [SerializeField]
+        private uint _appid = AppId_t.Invalid.m_AppId;
+
+        [SerializeField]
+        private AutoInitializeTiming _autoInitialize;
+
         private static bool s_everInialized;
         private bool _initialized;
+        private bool _started;
 
         private SteamAPIWarningMessageHook_t _steamAPIWarningMessageHook;
 
@@ -35,6 +46,69 @@ namespace com.spacepuppy
         {
             base.OnValidAwake();
 
+            if (_autoInitialize == AutoInitializeTiming.OnAwake)
+            {
+                this.Initialize();
+            }
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+
+            switch (_autoInitialize)
+            {
+                case AutoInitializeTiming.Manual:
+                    //do nothing
+                    break;
+                case AutoInitializeTiming.OnAwake:
+                case AutoInitializeTiming.OnStart:
+                    if (!_initialized) this.Initialize();
+                    break;
+            }
+
+            if (!_initialized) return;
+
+            _started = true;
+            this.RegisterSteamClientMessageHooks();
+        }
+
+        // OnApplicationQuit gets called too early to shutdown the SteamAPI.
+        // Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
+        // Thus it is not recommended to perform any Steamworks work in other OnDestroy functions as the order of execution can not be garenteed upon Shutdown. Prefer OnDisable().
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (!_initialized) return;
+
+            SteamAPI.Shutdown();
+        }
+
+        #endregion
+
+        #region Properties
+
+        public bool Initialized => _initialized;
+
+        public uint AppId
+        {
+            get => _appid;
+            set => _appid = value;
+        }
+
+        public AutoInitializeTiming AutoInitialize
+        {
+            get => _autoInitialize;
+            set => _autoInitialize = value;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void Initialize()
+        {
             if (s_everInialized)
             {
                 // This is almost always an error.
@@ -58,7 +132,7 @@ namespace com.spacepuppy
             {
                 // If Steam is not running or the game wasn't started through Steam, SteamAPI_RestartAppIfNecessary starts the
                 // Steam client and also launches this game again if the User owns it. This can act as a rudimentary form of DRM.
-                if (SteamAPI.RestartAppIfNecessary(APP_ID))
+                if (SteamAPI.RestartAppIfNecessary(new AppId_t(_appid)))
                 {
                     Application.Quit();
                     return;
@@ -90,46 +164,22 @@ namespace com.spacepuppy
             }
 
             s_everInialized = true;
+
+            if (_started)
+            {
+                //we get here if Initialize was called manually AFTER 'Start', so we need to do our post initialize logic that is usually done in 'Start' here instead.
+                this.RegisterSteamClientMessageHooks();
+            }
         }
 
-        #endregion
-
-        #region Properties
-
-        public bool Initialized
+        void RegisterSteamClientMessageHooks()
         {
-            get { return _initialized; }
-        }
-
-        #endregion
-
-        #region Methods
-
-        // This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
-        protected override void Start()
-        {
-            base.Start();
-
-            if (!_initialized) return;
-
             SteamClient.SetWarningMessageHook((severity, text) =>
             {
                 if (text != null) Debug.LogWarning(text.ToString());
             });
         }
 
-        // OnApplicationQuit gets called too early to shutdown the SteamAPI.
-        // Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
-        // Thus it is not recommended to perform any Steamworks work in other OnDestroy functions as the order of execution can not be garenteed upon Shutdown. Prefer OnDisable().
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            if (!_initialized) return;
-
-            SteamAPI.Shutdown();
-        }
-        
         private void Update()
         {
             if (!_initialized) return;
@@ -140,8 +190,10 @@ namespace com.spacepuppy
 
         #endregion
 
+#else
+
+#endif
+
     }
 
 }
-
-#endif
